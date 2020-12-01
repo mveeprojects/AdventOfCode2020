@@ -38,6 +38,4 @@ class AccountCheckerSpec extends UnitSpecBase {
   "readReport" should "return an error message if file is not correctly formatted" in {
     testAccChecker.readReport("/day1/testinputbad") shouldBe Left("Something went wrong, make sure the input report exists at the path specified (/day1/testinputbad) and all lines are valid integers")
   }
-
-
 }
