@@ -6,29 +6,36 @@ import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 import scala.util.{Failure, Success, Try}
 
-object AccountChecker extends App {
+object Main extends App {
+  val accChecker = new AccountChecker
+  accChecker.run()
+}
+
+class AccountChecker {
 
   val defaultInputFilePath = "/day1/input"
   val numberToReach = 2020
 
-  readReport() match {
-    case Right(report) => checkListOfNumbers(report) match {
-      case Some(result) => println(s"Two numbers did add up to $numberToReach, their product is $result")
-      case None => println(s"No numbers in the input list add up to $numberToReach")
+  def run(inputReportPath: String = defaultInputFilePath): Unit = {
+    readReport(inputReportPath) match {
+      case Right(report) => checkListOfNumbers(report) match {
+        case Some(result) => println(s"Two numbers in the report did add up to $numberToReach, their product is $result")
+        case None => println(s"No two numbers in the report added up to $numberToReach")
+      }
+      case Left(error) => println(error)
     }
-    case Left(error) => println(error)
   }
 
-  def readReport(resourcePath: String = defaultInputFilePath): Either[String, List[Int]] = {
-    val file = new File(getClass.getResource(resourcePath).getPath)
+  def readReport(inputReportPath: String): Either[String, List[Int]] = {
+    val file = new File(getClass.getResource(inputReportPath).getPath)
     val source: BufferedSource = Source.fromFile(file)
     Try(source.getLines.map(_.toInt).toList) match {
       case Success(value) =>
         source.close
         Right(value)
-      case Failure(_) =>
+      case Failure(ex) =>
         source.close
-        Left("Something went wrong, make sure all lines in input file are ints")
+        Left(s"Something went wrong, make sure the input report exists at the path specified ($inputReportPath) and all lines are valid integers")
     }
   }
 
@@ -37,7 +44,7 @@ object AccountChecker extends App {
   }
 
   @tailrec
-  def checkListOfNumbers(inputList: List[Int]): Option[Int] = {
+  final def checkListOfNumbers(inputList: List[Int]): Option[Int] = {
     if (inputList.tail.size < 1) None
     else {
       val headValue = inputList.head
