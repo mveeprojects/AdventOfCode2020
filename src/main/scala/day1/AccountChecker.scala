@@ -39,9 +39,7 @@ class AccountChecker {
     }
   }
 
-  def checkSumOfTwoNumbers(a: Int, b: Int): Boolean = {
-    a + b == numberToReach
-  }
+  def checkSumOfTwoNumbers(a: Int, b: Int): Boolean = a + b == numberToReach
 
   @tailrec
   final def checkListOfNumbers(inputList: List[Int]): Option[Int] = {
