@@ -1,5 +1,5 @@
 package day1
 
 object AccountChecker extends App {
-  println("hi")
+  def checkNumbers(a: Int, b: Int): Boolean = a + b == 2020
 }
