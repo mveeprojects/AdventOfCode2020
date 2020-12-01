@@ -11,9 +11,14 @@ class AccountCheckerSpec extends UnitSpecBase {
     testAccChecker.checkSumOfTwoNumbers(2019, 0) shouldBe false
   }
 
-  "checkListOfNumbers" should "return a list of number combinations that add up to 2020" in {
+  "checkListOfNumbers" should "return a Some containing the product of the two numbers that add up to 2020 (if they exist)" in {
     val inputList = List(2000, 10, 20, 40)
     testAccChecker.checkListOfNumbers(inputList) shouldBe Some(40000)
+  }
+
+  "checkListOfNumbers" should "return a None if there are no number combinations that add up to 2020" in {
+    val inputList = List(2000, 10, 30, 40)
+    testAccChecker.checkListOfNumbers(inputList) shouldBe None
   }
 
   "readReport" should "return a list of ints if file is formatted correctly" in {
