@@ -22,7 +22,7 @@ class AccountChecker {
         case Some(result) => println(s"Two numbers in the report did add up to $numberToReach, their product is $result")
         case None => println(s"No two numbers in the report added up to $numberToReach")
       }
-      case Left(error) => println(error)
+      case Left(errorMessage) => println(errorMessage)
     }
   }
 
@@ -33,7 +33,7 @@ class AccountChecker {
       case Success(value) =>
         source.close
         Right(value)
-      case Failure(ex) =>
+      case Failure(_) =>
         source.close
         Left(s"Something went wrong, make sure the input report exists at the path specified ($inputReportPath) and all lines are valid integers")
     }
