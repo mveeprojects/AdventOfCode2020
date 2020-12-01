@@ -8,14 +8,12 @@ import scala.util.{Failure, Success, Try}
 
 object AccountChecker {
 
-  def main(args: Array[String]): Unit = {
-    readReport() match {
-      case Right(report) => checkListOfNumbers(report) match {
-        case Some(result) => println(s"Two numbers did add up to 2020, their product is $result")
-        case None => println(s"No numbers in the input list add up to 2020")
-      }
-      case Left(error) => println(error)
+  readReport() match {
+    case Right(report) => checkListOfNumbers(report) match {
+      case Some(result) => println(s"Two numbers did add up to 2020, their product is $result")
+      case None => println(s"No numbers in the input list add up to 2020")
     }
+    case Left(error) => println(error)
   }
 
   def readReport(resourcePath: String = "/day1/input"): Either[String, List[Int]] = {
