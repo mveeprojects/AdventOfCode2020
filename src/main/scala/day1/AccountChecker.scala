@@ -6,17 +6,20 @@ import scala.annotation.tailrec
 import scala.io.{BufferedSource, Source}
 import scala.util.{Failure, Success, Try}
 
-object AccountChecker {
+object AccountChecker extends App {
+
+  val defaultInputFilePath = "/day1/input"
+  val numberToReach = 2020
 
   readReport() match {
     case Right(report) => checkListOfNumbers(report) match {
-      case Some(result) => println(s"Two numbers did add up to 2020, their product is $result")
-      case None => println(s"No numbers in the input list add up to 2020")
+      case Some(result) => println(s"Two numbers did add up to $numberToReach, their product is $result")
+      case None => println(s"No numbers in the input list add up to $numberToReach")
     }
     case Left(error) => println(error)
   }
 
-  def readReport(resourcePath: String = "/day1/input"): Either[String, List[Int]] = {
+  def readReport(resourcePath: String = defaultInputFilePath): Either[String, List[Int]] = {
     val file = new File(getClass.getResource(resourcePath).getPath)
     val source: BufferedSource = Source.fromFile(file)
     Try(source.getLines.map(_.toInt).toList) match {
@@ -30,7 +33,7 @@ object AccountChecker {
   }
 
   def checkSumOfTwoNumbers(a: Int, b: Int): Boolean = {
-    a + b == 2020
+    a + b == numberToReach
   }
 
   @tailrec
