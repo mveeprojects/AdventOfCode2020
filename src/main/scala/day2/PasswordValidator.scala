@@ -18,7 +18,7 @@ object Main extends App {
 class PasswordValidator {
 
   val defaultInputFilePath = "/day2/input"
-  val pattern: Regex = "[1-9]{1}-[1-9]{1}\\s[a-z]{1}:\\s[a-z]{1,20}".r
+  val pattern: Regex = "[0-99]{1,2}-[0-99]{1,2}\\s[a-z]{1}:\\s[a-z]{1,20}".r
   val stringLineToLowercase: String => String = _.toLowerCase
 
   def run(inputReportPath: String = defaultInputFilePath): Unit = {
