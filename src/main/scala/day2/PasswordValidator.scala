@@ -4,9 +4,9 @@ import helpers.FileReader.readInputFile
 
 import scala.util.matching.Regex
 
-case class PasswordValidatorError(msg: String) extends Exception()
+case class PasswordValidationError(msg: String) extends Exception()
 
-case class Policy(occurrenceString: String, letter: String)
+case class Policy(occurrenceString: String, letter: Char)
 
 case class PasswordWithPolicy(policy: Policy, password: String)
 
@@ -22,16 +22,20 @@ class PasswordValidator {
   val stringLineToLowercase: String => String = _.toLowerCase
 
   def run(inputReportPath: String = defaultInputFilePath): Unit = {
-    readInputFile(inputReportPath, stringLineToLowercase) match {
-      case Right(report) => report.map(lineSplitter).foreach(println)
+    val result = readInputFile(inputReportPath, stringLineToLowercase) match {
+      case Right(report) => report
+        .map(lineSplitter)
+        .map { case Right(value) => value }
+        .count(checkPasswordAgainstPolicy)
       case Left(errorMessage) => println(errorMessage)
     }
+    println(result)
   }
 
-  def lineSplitter(line: String): Either[PasswordValidatorError, PasswordWithPolicy] = {
+  def lineSplitter(line: String): Either[PasswordValidationError, PasswordWithPolicy] = {
     lineRegexChecker(line) match {
       case Some(value) => Right(stringToPasswordWithPolicy(value))
-      case None => Left(PasswordValidatorError("badly formatted input"))
+      case None => Left(PasswordValidationError("badly formatted input"))
     }
   }
 
@@ -43,8 +47,18 @@ class PasswordValidator {
     val policyPasswordArr = input.split(":")
     val policyArr = policyPasswordArr(0).split(" ")
     PasswordWithPolicy(
-      Policy(policyArr(0), policyArr(1)),
+      Policy(policyArr(0), policyArr(1).toCharArray.head),
       policyPasswordArr(1).replace(" ", "")
     )
+  }
+
+  def checkPasswordAgainstPolicy(passwordWithPolicy: PasswordWithPolicy): Boolean = {
+    val occArr = passwordWithPolicy.policy.occurrenceString.split("-")
+    val minOccurances = occArr(0).toInt
+    val maxOccurances = occArr(1).toInt
+    val actualOccurances = passwordWithPolicy.password
+      .count(_ == passwordWithPolicy.policy.letter)
+    if (minOccurances <= actualOccurances && actualOccurances <= maxOccurances) true
+    else false
   }
 }
