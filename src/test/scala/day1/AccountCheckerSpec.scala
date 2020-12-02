@@ -30,12 +30,4 @@ class AccountCheckerSpec extends UnitSpecBase {
     val inputList = List(16, 3, 1, 12, 42, 65)
     testAccChecker.checkListOfNumbersThreeNums(inputList) shouldBe None
   }
-
-  "readReport" should "return a list of ints if file is formatted correctly" in {
-    testAccChecker.readReport("/day1/testinputgood") shouldBe Right(List(2000, 10, 20, 40))
-  }
-
-  "readReport" should "return an error message if file is not correctly formatted" in {
-    testAccChecker.readReport("/day1/testinputbad") shouldBe Left("Something went wrong, make sure the input report exists at the path specified (/day1/testinputbad) and all lines are valid integers")
-  }
 }
