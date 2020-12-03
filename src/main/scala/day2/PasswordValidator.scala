@@ -17,16 +17,20 @@ object Main extends App {
 
 class PasswordValidator {
 
+  val oldRule = false
+
   val defaultInputFilePath = "/day2/input"
   val pattern: Regex = "[0-99]{1,2}-[0-99]{1,2}\\s[a-z]{1}:\\s[a-z]{1,20}".r
   val stringLineToLowercase: String => String = _.toLowerCase
 
   def run(inputReportPath: String = defaultInputFilePath): Unit = {
     val result = readInputFile(inputReportPath, stringLineToLowercase) match {
-      case Right(report) => report
-        .map(lineSplitter)
-        .map { case Right(value) => value }
-        .count(checkPasswordAgainstPolicy)
+      case Right(report) =>
+        val res: List[PasswordWithPolicy] = report
+          .map(lineSplitter)
+          .map { case Right(value) => value }
+        if (oldRule) res.count(checkPasswordAgainstPolicy)
+        else res.count(checkPasswordLetterPositioning)
       case Left(errorMessage) => println(errorMessage)
     }
     println(result)
@@ -59,6 +63,19 @@ class PasswordValidator {
     val actualOccurances = passwordWithPolicy.password
       .count(_ == passwordWithPolicy.policy.letter)
     if (minOccurances <= actualOccurances && actualOccurances <= maxOccurances) true
+    else false
+  }
+
+  def checkPasswordLetterPositioning(passwordWithPolicy: PasswordWithPolicy): Boolean = {
+    val occArr = passwordWithPolicy.policy.occurrenceString.split("-")
+    val firstPossibleOccurance = occArr(0).toInt - 1
+    val secondPossibleOccurance = occArr(1).toInt - 1
+    val actualPositionOfOccurances = passwordWithPolicy.password
+      .toList
+      .zipWithIndex
+      .collect { case (passwordWithPolicy.policy.letter, i) => i }
+    if (actualPositionOfOccurances.contains(firstPossibleOccurance) && actualPositionOfOccurances.contains(secondPossibleOccurance)) false
+    else if (actualPositionOfOccurances.contains(firstPossibleOccurance) || actualPositionOfOccurances.contains(secondPossibleOccurance)) true
     else false
   }
 }

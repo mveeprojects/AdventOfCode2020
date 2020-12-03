@@ -15,6 +15,10 @@ class PasswordValidatorSpec extends UnitSpecBase {
   private val badPasswordPolicy = PasswordWithPolicy(Policy(goodInputPolicyOccString, goodInputPolicyLetterAfterProcessing), badInputPassword)
   private val badInput = goodInput.replace(goodInputPolicyOccString, "")
 
+  private val goodPositionLetterInput = PasswordWithPolicy(Policy("1-3", 'm'), "mark")
+  private val badTwoPositionLetterInput = PasswordWithPolicy(Policy("1-3", 'm'), "mamk")
+  private val badNonExistentPositionLetterInput = PasswordWithPolicy(Policy("1-3", 'm'), "aaak")
+
   "lineRegexChecker" should "return Some(value) when input matches regex" in {
     testPassValidator.lineRegexChecker(goodInput) shouldBe Some(goodInput)
   }
@@ -41,5 +45,17 @@ class PasswordValidatorSpec extends UnitSpecBase {
 
   "checkPasswordAgainstPolicy" should "return false if the password does not meet the policy" in {
     testPassValidator.checkPasswordAgainstPolicy(badPasswordPolicy) shouldBe false
+  }
+
+  "checkPasswordLetterPositioning" should "return true if the required letter only turns up in one of the specified positions" in {
+    testPassValidator.checkPasswordLetterPositioning(goodPositionLetterInput) shouldBe true
+  }
+
+  "checkPasswordLetterPositioning" should "return false if the required letter turns up in both of the specified positions" in {
+    testPassValidator.checkPasswordLetterPositioning(badTwoPositionLetterInput) shouldBe false
+  }
+
+  "checkPasswordLetterPositioning" should "return false if the required letter turns up in neither of the specified positions" in {
+    testPassValidator.checkPasswordLetterPositioning(badNonExistentPositionLetterInput) shouldBe false
   }
 }
